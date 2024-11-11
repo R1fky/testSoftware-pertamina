@@ -1,5 +1,6 @@
 const { Builder, Browser, By, Key, until } = require("selenium-webdriver");
 const { elementIsDisabled, elementLocated } = require("selenium-webdriver/lib/until");
+const { Select } = require('selenium-webdriver/lib/select') 
 
 async function tesLogin(driver) {
   try {
@@ -21,9 +22,29 @@ async function btnTambahTgs(driver) {
     const nama_tugas = await driver.wait(until.elementLocated(By.name('nama_tugas')), 2000)
     nama_tugas.sendKeys('Tes Tambah Tugas')
 
-    async function elemenOption() {
-      
-    }
+    //isi option
+    const frekuensi = await driver.findElement(By.name('frekuensi'))
+    const bulan = await driver.findElement(By.name('bulan_id'))
+    const category = await driver.findElement(By.name('category_id'))
+    const pic = await driver.findElement(By.name('pic_id'))
+    const user = await driver.findElement(By.name('user_id'))
+
+    await new Select(frekuensi).selectByValue('bulanan')
+    await new Select(bulan).selectByValue('3')
+    await new Select(category).selectByValue('2')
+    await new Select(pic).selectByValue('5')
+    await new Select(user).selectByValue('70')
+
+    //input deskripsi
+    await driver.findElement(By.name('deskripsi')).sendKeys('Dekripsi ini adalah Testting')
+
+    const textContent = await driver.executeScript('return document.body.innerText')
+    console.log(textContent)
+
+    const button = await driver.findElement(By.xpath("//button[contains(text(), 'Save changes')]"));
+    await button.click();
+
+    console.log("Data Tugas Testing Berhasil Di Tambahkan")
   } catch (error) {
     console.error("Tambah Tugas Tidak Berhasil diJalankan", error);
   }
@@ -71,11 +92,11 @@ async function btnSearch(driver) {
     await tesLogin(driver);
     await driver.sleep(2000);
     await btnTambahTgs(driver)
-    // await driver.sleep(2000)
-    // await btnInfoTgs(driver);
-    // await driver.sleep(5000);
-    // await btnDeleteTgs(driver);
-    // await driver.sleep(3000);
+    await driver.sleep(2000)
+    await btnInfoTgs(driver);
+    await driver.sleep(5000);
+    await btnDeleteTgs(driver);
+    await driver.sleep(3000);
   } finally {
     await driver.sleep(5000);
     await driver.quit();
