@@ -38,9 +38,6 @@ async function btnTambahTgs(driver) {
     //input deskripsi
     await driver.findElement(By.name('deskripsi')).sendKeys('Dekripsi ini adalah Testting')
 
-    const textContent = await driver.executeScript('return document.body.innerText')
-    console.log(textContent)
-
     const button = await driver.findElement(By.xpath("//button[contains(text(), 'Save changes')]"));
     await button.click();
 
