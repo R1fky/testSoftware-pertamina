@@ -1,6 +1,6 @@
 const { Builder, Browser, By, Key, until } = require("selenium-webdriver");
 const { elementIsDisabled, elementLocated } = require("selenium-webdriver/lib/until");
-const { Select } = require('selenium-webdriver/lib/select') 
+const { Select } = require("selenium-webdriver/lib/select");
 
 async function tesLogin(driver) {
   try {
@@ -16,34 +16,53 @@ async function tesLogin(driver) {
 async function btnTambahTgs(driver) {
   try {
     await driver.get("http://pertaminaproject.test/daftarkerja");
-    const btnTambahTgs = await driver.findElement(By.xpath('//button[@data-bs-target="#tambahTugas"]'))
-    btnTambahTgs.click()
 
-    const nama_tugas = await driver.wait(until.elementLocated(By.name('nama_tugas')), 2000)
-    nama_tugas.sendKeys('Tes Tambah Tugas')
+    // Periksa apakah tugas dengan nama yang sama sudah ada
+    const tugas_baru = "Tes pertama";
+    const existingTask = await driver.findElements(By.xpath(`//input[@name='nama_tugas' and @value='${tugas_baru}']`));
 
-    //isi option
-    const frekuensi = await driver.findElement(By.name('frekuensi'))
-    const bulan = await driver.findElement(By.name('bulan_id'))
-    const category = await driver.findElement(By.name('category_id'))
-    const pic = await driver.findElement(By.name('pic_id'))
-    const user = await driver.findElement(By.name('user_id'))
+    if (existingTask.length > 0) {
+      console.log("Tugas sudah ada. Tidak perlu menambahkan tugas baru.");
+      return;
+    }
 
-    await new Select(frekuensi).selectByValue('bulanan')
-    await new Select(bulan).selectByValue('3')
-    await new Select(category).selectByValue('2')
-    await new Select(pic).selectByValue('5')
-    await new Select(user).selectByValue('70')
+    // Jika tugas belum ada, lanjutkan proses penambahan tugas
+    const btnTambahTgs = await driver.findElement(By.xpath('//button[@data-bs-target="#tambahTugas"]'));
+    btnTambahTgs.click();
+
+    const nama_tugas = await driver.wait(until.elementLocated(By.name("nama_tugas")), 2000);
+    nama_tugas.sendKeys(tugas_baru);
+
+    // Isi option
+    const frekuensi = await driver.findElement(By.name("frekuensi"));
+    const bulan = await driver.findElement(By.name("bulan_id"));
+    const category = await driver.findElement(By.name("category_id"));
+    const pic = await driver.findElement(By.name("pic_id"));
+    const user = await driver.findElement(By.name("user_id"));
+
+    await new Select(frekuensi).selectByValue("bulanan");
+    await new Select(bulan).selectByValue("3");
+    await new Select(category).selectByValue("2");
+    await new Select(pic).selectByValue("5");
+    await new Select(user).selectByValue("70");
 
     //input deskripsi
     await driver.findElement(By.name('deskripsi')).sendKeys('Dekripsi ini adalah Testting')
 
+    const textContent = await driver.executeScript('return document.body.innerText')
+    console.log(textContent)
+
     const button = await driver.findElement(By.xpath("//button[contains(text(), 'Save changes')]"));
     await button.click();
 
-    console.log("Data Tugas Testing Berhasil Di Tambahkan")
+    // Periksa apakah tugas berhasil ditambahkan
+    const addedTask = await driver.wait(until.elementLocated(By.xpath(`//input[@name='nama_tugas' and @value='${tugas_baru}']`)), 5000);
+
+    if (addedTask) {
+      console.log("Data tugas berhasil ditambahkan.");
+    }
   } catch (error) {
-    console.error("Tambah Tugas Tidak Berhasil diJalankan", error);
+    console.error("Tambah Tugas Tidak Berhasil dijalankan", error);
   }
 }
 
@@ -81,6 +100,17 @@ async function btnDeleteTgs(driver) {
 }
 
 async function btnSearch(driver) {
+  try {
+    await driver.get("http://pertaminaproject.test/daftarkerja");
+
+    const search = "tes";
+    const btnSearch = await driver.findElement(By.name("search"));
+    btnSearch.sendKeys(search, Key.RETURN);
+
+    console.log("Search berhasil dijalankan");
+  } catch (error) {
+    console.error("Search tidak berhasil dijalankan");
+  }
 }
 
 (async function runTest() {
@@ -88,11 +118,13 @@ async function btnSearch(driver) {
   try {
     await tesLogin(driver);
     await driver.sleep(2000);
-    await btnTambahTgs(driver)
-    await driver.sleep(2000)
+    await btnTambahTgs(driver);
+    await driver.sleep(2000);
     await btnInfoTgs(driver);
     await driver.sleep(5000);
     await btnDeleteTgs(driver);
+    await driver.sleep(3000);
+    await btnSearch(driver);
     await driver.sleep(3000);
   } finally {
     await driver.sleep(5000);
