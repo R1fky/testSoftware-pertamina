@@ -111,19 +111,42 @@ async function btnSearch(driver) {
   }
 }
 
+// async function editTest(driver) {
+//   try {
+//     await driver.get("http://pertaminaproject.test/daftarkerja");
+
+//     // await driver.findElement(By.xpath(`//button[@class="btn btn-warning btn-sm me-2"]`)).click();
+//     await driver.wait(until.elementLocated(By.xpath(`//button[@class="btn btn-warning btn-sm me-2"]`)), 3000).click()
+//     const name_tugas = await driver.findElement(By.xpath('//input[@value="Tes kebugaran fireman dan sekuriti"]'))
+//     await name_tugas.clear()
+//     name_tugas.sendKeys('Tes Ganti Edit')
+
+//     // Tunggu hingga elemen frekuensi tersedia
+//     const frekuensi = await driver.wait(until.elementLocated(By.name("frekuensi")), 10000);
+//     // await frekuensi.clear();
+//     await new Select(frekuensi).selectByValue("mingguan");
+
+//     console.log("Testing Edit Berhasil");
+//   } catch (error) {
+//     console.error("Testing Edit gagal dilakukan", error);
+//   }
+// }
+
 (async function runTest() {
   let driver = await new Builder().forBrowser("chrome").build();
   try {
     await tesLogin(driver);
     await driver.sleep(2000);
-    await btnTambahTgs(driver);
+    // await btnTambahTgs(driver);
+    // await driver.sleep(2000);
+    // await btnInfoTgs(driver);
+    // await driver.sleep(5000);
+    // await btnDeleteTgs(driver);
+    // await driver.sleep(3000);
+    // await btnSearch(driver);
+    // await driver.sleep(3000);
+    await editTest(driver);
     await driver.sleep(2000);
-    await btnInfoTgs(driver);
-    await driver.sleep(5000);
-    await btnDeleteTgs(driver);
-    await driver.sleep(3000);
-    await btnSearch(driver);
-    await driver.sleep(3000);
   } finally {
     await driver.sleep(5000);
     await driver.quit();
