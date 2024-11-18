@@ -18,7 +18,7 @@ async function btnTambahTgs(driver) {
     await driver.get("http://pertaminaproject.test/daftarkerja");
 
     // Periksa apakah tugas dengan nama yang sama sudah ada
-    const tugas_baru = "Tes pertama";
+    const tugas_baru = "Tes KeDua";
     const existingTask = await driver.findElements(By.xpath(`//input[@name='nama_tugas' and @value='${tugas_baru}']`));
 
     if (existingTask.length > 0) {
@@ -137,16 +137,16 @@ async function btnSearch(driver) {
   try {
     await tesLogin(driver);
     await driver.sleep(2000);
-    // await btnTambahTgs(driver);
-    // await driver.sleep(2000);
+    await btnTambahTgs(driver);
+    await driver.sleep(2000);
     // await btnInfoTgs(driver);
     // await driver.sleep(5000);
     // await btnDeleteTgs(driver);
     // await driver.sleep(3000);
     // await btnSearch(driver);
     // await driver.sleep(3000);
-    await editTest(driver);
-    await driver.sleep(2000);
+    // await editTest(driver);
+    // await driver.sleep(2000);
   } finally {
     await driver.sleep(5000);
     await driver.quit();
